@@ -69,10 +69,10 @@ def _find_tk_tclshell():
     tcl_root = tk_root = None
 
     # Python code to get path to TCL_LIBRARY.
-    code = 'from Tkinter import Tcl; t = Tcl(); print t.eval("info library")'
+    code = 'from Tkinter import Tcl; t = Tcl(); print(t.eval("info library"))'
 
     tcl_root = exec_statement(code)
-    tk_version = exec_statement('from _tkinter import TK_VERSION as v; print v')
+    tk_version = exec_statement('from _tkinter import TK_VERSION as v; print(v)')
     # TK_LIBRARY is in the same prefix as Tcl.
     tk_root = os.path.join(os.path.dirname(tcl_root), 'tk%s' % tk_version)
     return tcl_root, tk_root
@@ -91,9 +91,9 @@ def _find_tk(mod):
     if is_darwin:
         # _tkinter depends on system Tcl/Tk frameworks.
         if not bins:
-            # 'mod.binaries' can't be used because on Mac OS X _tkinter.so
+            # 'mod.pyinstaller_binaries' can't be used because on Mac OS X _tkinter.so
             # might depend on system Tcl/Tk frameworks and these are not
-            # included in 'mod.binaries'.
+            # included in 'mod.pyinstaller_binaries'.
             bins = PyInstaller.bindepend.getImports(mod.__file__)
             # Reformat data structure from
             #     set(['lib1', 'lib2', 'lib3'])
@@ -152,7 +152,7 @@ def hook(mod):
     # Get the Tcl/Tk data files for bundling with executable.
     #try:
     tk_files = _collect_tkfiles(mod)
-    mod.datas.extend(tk_files)
+    mod.pyinstaller_datas.extend(tk_files)
     #except:
     #logger.error("could not find TCL/TK")
 
